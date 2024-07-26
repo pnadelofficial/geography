@@ -1,0 +1,14 @@
+testing PDF process notes
+
+* first i had to dig up the excel to pdf conversion
+* so I might later need to do some conversion also - 
+    * I have a csv script and I have an excel to pdf script
+    * may need to do both or better yet combine them.
+    * workin on branch selena_updates
+* and fun fact now I know what I changed in basinclass it was just the tigris url (copy from 0612)
+* needed to change a couple things in the script
+* needed to have the pdf csv
+* date in csv needs to be yyyy (have been doing this manually), I think because the csv it’s converting from is also not reading correctly. maybe read date cols as string
+* need to have downloads/tigr/pdf folder
+* filename needs update, I think
+    * copy over code in filename 
