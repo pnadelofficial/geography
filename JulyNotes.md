@@ -1,204 +1,125 @@
-# what I'm working on this week
+# next steps
+- * new instructions for running it (notes below)
+- * Git setup, organize, push, clone & pull instructions
+- - organize a little bit and make sure new locations are logged so I can make changes linking to classes, for example
+        make sure search terms are updated, in Git, maybe a better filename, and maybe on Box as well for version control
+- - push to GitHub
+- - new clone and pull instructions
 
-## questions for friday
-- * yeah let's do the github setup live
-- * why is it asking me for password every time in the .py script still?
+## Friday Aug30 meeting
+- * now that the excel script is running, I'm diving into the PDF process - I don't know how long this will take
+- * would it be a good use of time to go through some GitHub best practices
+- - haven't reorganized - haven't looked at others'
+- - haven't pushed or updated clone/pull instructions
+- - this would be a good next step because I think we now have something folks can use
 
-# July fixes
--  to match the Nexis Uni updates
+## PDF process outline
+- Init method could take excel status sheet,
+- Create file structure,
+- maybe create pdf status sheet
+- Basically the same thing in download setup until download options window, then the window options are different
 
-- here I'll talk about the Nexis Uni updates - they updated their website and now element ids/css selectors or whatever aren't matching those in our script
+- notes for PDF
+- * py PDF package
+- * deals with the size issue of PDF
 
-## it starts at the group duplicates part
-- * we have these options somewhere
-- - Rachel is investigating which is the best grouping option
-
-## I also made some changes to main (copy? geo2?)
-- when I thought the issue was result count. so those need to be fixed
-- or at least run to see if it's working
-- * (my notes) - 282 added the variable result_count_selector, same with 288, 305
-
-
-## search process is fixed
-
-## what's working really well so far:
-
-- * LoginClass
-- - instantiated this way, pw is prompted before chrome opens
-- - login runs (but still shows error msg, I think it's a timeout thing, will it work in a .py?)
-- * NoLinkClass
-- - updates work, this is great
-- - consolidated into search process
-- * timeline and change dates
-- - so far so good
-- - the stuff under here could all be in a "superclass" (??) called ~~ Download 
-- - / a "subclass" (??) called ~~ class DownloadSetup
-
-## what I'm working on next:
-
-- * putting search process + basinclass url process together
-- - I'm not sure why the error, it's saying something about currentuser?
-- * I'll probably have a linkclass (basinclass) in addition to NLC, and some logic that asks whether the bcode is in basinclass (to run linkclass) and if not, run nolinkclass
-
-- - ideally the rest of the process is the same for link and no link
-- - would it be a problem/ can I grab the URL after search process
-- - then store it as variable search_link and then keep the rest of the script the same?
-- - can do the x timeline thing, but would have to put that back in somehow, this'll be speedier
-- * should add in element exception
+## notes for new instructions
+- first it'll be the git instructions
+- and any other setup instructions
+- * like updating/installing pip/python/selenium/driver etc
+- then it'll be the running instructions
+- * change user name and basin code
+- * make sure screen doesn't go to sleep
 
 
+## lower priority/optional next steps
 
-## QUESTIONS for 7/15
-- * how can I use the click_css and send_keys the methods we did in loginclass, do I do the same thing in my next classes?
-- - inheritance useful for this, a superclass ~~ "interactions"
-- - can also copy-paste!
-- * is Full Process (name tentative) the script "client" interacts with?
-- * should we have userClass already include base paths and all that stuff? currentUser variable? I don't see why this is in main.py
-- - how to refactor userClass to put it in?
-- * big picture, still struggling with userinformation - like how would that go?
+- * clean up other classes
+
+- * timeline (which weirdly hasn't been an issue yet?? but still...)
+- - maybe put this on hold because it wasn't a problem at all in testing?
+
+- * (optional) add the tally back in? 
+- - just because I'm curious where we're hitting the limit
+- - like, where does the banner start to appear? how many downloads after that do we need to reset login?
+- - test and save
+
+## try to automate previously manual processes
+
+- * Automate creating folders (only happens once, probably early in the process)
+- - if f"geography/geography/downloads/{basin_code}" does not exist, create folder basin_code
+- - if f"geography/geography/downloads/{basin_code}/{file_type}" does not exist, create folder {file_type}
+-  would be something like
+- import os 
+- os.makedirs("name/of/directory", exist_ok=True)
+
+- * automate over_thousand handling: 
+- - a while loop - the way it works is while (some condition), if the condition never changes, it'll run forever, so the last row changes the condition
+- - result_check function (with the number as an integer)
+- - num rescheck init as 0
+- - while result_check>999
+- - another function slider_move
+- - a method like split_over_thousand():
+        "if over thousand result count 1000-2000, df append 2 rows, split timeline in half somehow (timeline slider?? or check analytics????); if 2000-3000 df append 3 rows, split in 3rds..."
+- - and then if this  or whatever runs, how to handle unfinished row ...
+- - maybe: mark result_count as 0 or null, but keep over_thousand as 1, mark finished=1?, create empty resultslist df in the download folder (this could have implications for combination script)
+
+- * update/debug combination script, maybe turn it into a method I can use in the script, something like
+- - if all rows = finished, or all in download match index rows in status sheet, run combination()
+- - would be extremely cool if we could automate, it could tell us which are missing
+- - and test that full process with one of the tiny basins
+
+- * could even add in the excel/csv/pdf conversions?
+
+
+## other questions and notes (August)
+- should I make status_data a df before writing to csv? that's what David had
+- - df = pd.DataFrame(status_data) 
 
 ## github
-- * make sharedwaterslab gmail (outlook?) free
-- * pw = SharedWatersLab2022
-- * and set up new github
-- * find and delete .git file
-- * push to new repository in new github
-- - can be complicated, maybe do live
-- * email peter when done, he'll send instructions
+- what are the files it's using
+- * running: fullprocess.py
+- * downloadclass.py
+- * loginclass, nolinkclass, userclass - folder from top level called classes
 
-- other notes for github
-- * maybe be pickier about which files move over
-
-
-## I actually didn't send these questions  ^
-- because the nexis uni snafu, so table them for now
-
-# notes for work week of 7/15
-- * next steps
-- - fix group duplicates
-
-
-- * didn't get to these but want to eventually:
-- - I do want to add into options the iterate through the numbers for StoredLoginInformation
-- - this is so not a priority but if perfection is the goal, I might want to put the basin search terms (box 3) all that pandas reading inside NoLinkClass. But I guess this depends on how much we anticipate needing to change out the search terms in the excel sheet??
-
-
-## path fwd 
-- I think I need help with this overarching part
-
-        #new class "governing" with a method "reset"
-        # full process fp, call fp.restart()
-        #with self.number, method will increment that number +1, restart all freestanding variables but with the +1
-
-        # set this in a class, this as the reset
-        options.add_argument("user-data-dir=/tmp/storedLoginInformation" + number)
-        number is a range
-        when login fails
-        go to next number in range, run again
-
-## outline, each bullet is a class
-
-- main
-
-    - setup 
-        - webdriver manager
-        - options and everything
-    
-    - login
-        - pw manager
-        - same as internal user in main.py
-
-        # setup and login drafted, in FullProcessExample.ipynb
-        but there is a problem in the login, idk where, debug later
-        # note also that 
-        login for now assumes externalUser = False
-        but can incorporate True option later
-
-    - download
-
-        - if download_type = pdf:
-            - and then I think fullProcess will have some differences?
-        - if download_type = excel:
-            - 
-
-        - excel interaction
-            - check status sheet for dates (in main.py)
-                - for 0 in column “finished” to find row with date range
-                - set dates, convert to nexis uni format
-
-        - check for bcode in basinclass.py
-            - if yes, run base_search() download script
-            - if no, run NoLinkClass()
-
-        - search
-            - SearchToMain_test.ipynb
-            - or maybe it’s the search_link (could be from basinclass for NLC)
-
-        - page setup
-            - (maybe this is where we add the x in timeline, or at the end)
-            - open timeline
-            - change date in timeline
-            - group_duplicates
-            - sort_by_date
-            - get result count
-            - result count <1000, proceed to download
-
-
-        - all the file_name actions
-
-
-        - when finished download - add click x in timeline to reset (instead of going back to search step, which is how main.py is setup is just to return to the search_link defined in basinclass.py)
-
-
-    - add in click x in timeline
-
-
-"methods"
-
-* superclass (inheritance)
-
-    - download excel
-        - nolink
-        - basinclass
-    - download pdf
-        - nolink
-        - basinclass
-
-# currently the structure of single_basin_search is
-- single basin search
-    - base search
-        - so this is where we can have those two processes
-        - base search should be renamed to LinkClass maybe
-    - change date
-        - this will be the same no matter what
-    - group duplicates
-    - set sort by date
-        - these two can be in a function called "nexis_sort" or something
-    - get result count
-
-    - download 
-        - (use new naming convention from geo 1)
-    - mark complete
-    -   update status (0, 1)
-
-
-# “inheritance”
-
-    - future steps
-        - to add a layer of complexity later on, maybe try to do like a “if there’s a URL …” or “if this column says URL”, use basin class, if it says search use NoLinkClass
-    - and then if there’s a URL maybe print(“URL available, please use BasinClass URL-based process”
-
-- X timeline box (instead of resetting search)
+- geography top level
 
 
 
-NOTES from June 28
-- start thinking about this process
-- somewhere to “if break, try logininformation2” …
+- PATH UPDATES (check in UserClass)
+- * download folder is in geography/data/download
+- * status folder is in geography/data/status
+- * userclass - geography/geography/classes/userclass.py or classes.UserClass
+- * downloadclass - geography/geography/classes/downloadclass.py or classes.DownloadClass
+- * loginclass - geography/geography/classes/loginclass.py classes.LoginClass
+- * nolinkclass - geography/geography/classes/NoLinkClass.py, classes.NoLinkClass
 
-- ask Peter
-- the waiting for element piece of object orientation
-    - might work for both login and timeline issues
+- * geography folder
+- - full process there
+- - search_terms.xlsx
+- - classes folder containing downloadclass, userclass, nolinkclass, loginclass
+- * data folder
+- - status files
+- - download folder
+- * post-processing folder
+- * readme.md instructions
+- - and so I can write this in here
+- * license
+- * notebooks
+
+- * requirements.txt 
+- - just made this with pip freeze > requirements.txt
+
+- * .gitignore 
+- - anything I don't want to push, 
+- - anything that's 25mb or just big
+
+## how to actually update it 
+- git status - so it's aware of my changes (just did this 8/30)
+- then manually copy over changes (incl add/delete)
+- git add .
+- git commit -m "a message like ~this is the new thing"
+- git push
 
 
 ## parallel process
@@ -219,7 +140,7 @@ NOTES from June 28
 
 
 
-and then also - how to use markdown
+# and then also - how to use markdown
 - add file name.md 
 - # = title
 - ## = subsection
@@ -227,33 +148,3 @@ and then also - how to use markdown
 - * bullet
 - - sub bullet
 
-# Peter's outline from Friday 6/14 meeting:
-
-## full process example
-- Options...
-- webdriver...
-
-class FullProcess:
-    def __init__(self, options=Options, webdriver=webdriver):
-        self.number = 0
-        self.temp_foldername = "storedLoginInformation" + str(self.number)
-        self.options = Options...
-        self.webdriver = webdriver...
-
-    def reset(self):
-        self.number += 1 # self.number = self.number + 1
-        self.temp_foldername = "storedLoginInformation" + str(self.number)
-        self.webdriver.close()
-
-    def setup(self):
-        # all of the free floating variables from the file
-
-
-    def __call__(self):
-        self.reset()
-        self.setup()
-
-fp = FullProcess()
-fp()
-# hit a nexus uni issue
-fp()
