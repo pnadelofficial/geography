@@ -19,16 +19,9 @@ import pandas as pd
 import time
 import os
 
-from LoginClass import Login
-from NoLinkClass import NoLinkClass
-
-# if it works next test, delete this section
-'''
-from classes.LoginClass import WebDriverManager
-manager = WebDriverManager()
-#driver = manager.start_driver()
-options = manager.setup_options()
-'''
+from classes.LoginClass import Login
+from classes.NoLinkClass import NoLinkClass
+from classes.conversions.combine_results import CombineResults
 
 
 class ResetRequiredException(Exception):
@@ -37,9 +30,12 @@ class ResetRequiredException(Exception):
 class SkipRowException(Exception):
     pass
 
+class SingleResultException(Exception):
+    pass
+
 class Download:
 
-    def __init__(self, driver, basin_code, user_name, index, login, nlc, download_folder, download_folder_temp, status_file, finished, url = None, timeout = 20):
+    def __init__(self, driver, basin_code, user_name, index, login, nlc, download_folder: str, download_folder_temp, status_file, finished, url = None, timeout = 20):
         self.driver = driver
         self.basin_code = basin_code
         self.user_name = user_name
@@ -121,6 +117,7 @@ class Download:
         
         # If no format worked, raise an error
         raise ValueError(f"Unable to parse date string: {date_string}")
+        # this would be a good place to add an exception
         #and then maybe add in a skip/break of the loop, move to next index #
         
     def set_date_range(self, index):
@@ -207,8 +204,14 @@ class Download:
         time.sleep(3)
 
         timeline_ok_button = '#refine > div.supplemental.timeline > div.date-form > button'
-        self._click_from_css(timeline_ok_button)
-        time.sleep(10) # can always add more time if result_count is still a problem ??
+
+        try:
+            self._click_from_css(timeline_ok_button)
+            time.sleep(10) 
+        except NoSuchElementException:
+            self.driver.refresh()
+            print (f"resetting dates to default")
+            raise SingleResultException
 
     def group_duplicates(self):
         actions_dropdown_xpath = "//button[@id='resultlistactionmenubuttonhc-yk' and text()='Actions']"
@@ -426,11 +429,6 @@ class Download:
                     self.reset_needed = True
                     raise ResetRequiredException()
 
-    # Continue with the rest of your DownloadOptions method here
-    # For example:
-    # self.choose_file_format()
-    # self.set_download_options()
-    # etc.
 
         #self.result_count = self.get_result_count(index)
         time.sleep(2)
@@ -439,9 +437,15 @@ class Download:
         #self.result_list_field = '//*[@id="SelectedRange"]' #xpath copied
         #self.result_list_field = "//input[@type='text' and @id='SelectedRange']" #xpath my guess
         self.result_list_field = '/html/body/aside/form/div[4]/div[2]/div[1]/section/fieldset[1]/div[2]/div[1]/div/input' #full xpath, for some reason this works here
-        self.download_result_string = f"1-{self.result_count}"
-        print(f"Results {self.download_result_string}")
-        time.sleep(2)
+        try:
+            self.download_result_string = f"1-{self.result_count}"
+            print(f"Results {self.download_result_string}")
+            time.sleep(2)
+        except SingleResultException:
+            self.download_result_string = self.result_count
+            print(f"Only one result to download")
+            time.sleep(2)
+
         # put in results count to download
         self._send_keys_from_xpath(self.result_list_field, self.download_result_string)
         
@@ -539,14 +543,20 @@ class Download:
         
         row_index = 0
         while row_index < len(self.status_data):
+
+            # Check if all rows are finished
+            if (self.status_data['finished'] == 1).all():
+                print(f"All rows for {basin_code} are downloaded!")
+                #if self.download_type == "excel": # oh is download type not here yet?
+                    #combine_excel = CombineResults(basin_code)
+                    #combine_excel.combine()
+                #else:
+                   #pass
+                break
+
             row = self.status_data.iloc[row_index]
             self.finished = row['finished']
             self.over_thousand = row['over_one_thousand']
-
-            if self.finished == 2:
-                print(basin_code, " is done!")
-                time.sleep(1)
-                break
 
             if self.finished != 1 and self.over_thousand != 1:
                 try:

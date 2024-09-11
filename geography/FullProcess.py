@@ -28,13 +28,14 @@ from classes.NoLinkClass import NoLinkClass
 from classes.DownloadClass import Download
 
 #USER INFORMATION: User and Basin Information Setup (Set this for yourself and the current basin)
-external_user = False
+#external_user = False
 basin_code = "gron"
 master_user = "selena"
+download_type = "excel"
 
-currentUser = UserClass(basin_code, master_user, external_user)
+currentUser = UserClass(basin_code, master_user, download_type)
 currentUser.getName()
-paths = currentUser.getPath("excel")
+paths = currentUser.getPath(download_type)
 
 #Base Paths 
 user_name = paths["user_name"]
@@ -42,49 +43,67 @@ geography_folder = paths["geography_folder"]
 download_folder_temp = paths["download_folder_temp"]
 download_folder = paths["download_folder"]
 status_file = paths["status_file"]
-#might try to put these into userclass, no?
 
-time.sleep(5)
+def FullProcess():
 
-if __name__ == "__main__":  
-
-    pm = PasswordManager()
-    if pm.password is None:
-        password = pm.get_password()
-        print("Password set!")
-    else: pass
-    
-    manager = WebDriverManager()
-    options = manager.setup_options()
-    driver = manager.start_driver()
+    #directory = (f"{basin_code}/{download_type}")
+    if os.path.exists(download_folder):
+        print(f"{basin_code}/{download_type} folder already exists")
+    else:
+        os.makedirs(download_folder) # this isn't exactly right is it?
+        print(f"created folder {basin_code}/{download_type}")
 
     time.sleep(5)
-    login = Login(user_name=user_name, password=password, driver_manager=manager, url=None)
-    
-    login._init_login()
 
-time.sleep(5)
-nlc = NoLinkClass(driver, basin_code)
-nlc._search_process()
-time.sleep(10)
+    if __name__ == "__main__":  
 
-download = Download(
-    driver=driver,
-    basin_code=basin_code,
-    user_name=user_name,
-    index=0,  
-    login = login,
-    nlc = nlc,
-    download_folder = download_folder,
-    download_folder_temp = download_folder_temp,
-    status_file=status_file,
-    finished=False,  
-    url=None,  
-    timeout=20  
-)
+        pm = PasswordManager()
+        if pm.password is None:
+            password = pm.get_password()
+            print("Password set!")
+        else: pass
+        
+        manager = WebDriverManager()
+        options = manager.setup_options()
+        driver = manager.start_driver()
 
-status_data = download.status_data
-finished = download.finished
+        time.sleep(5)
+        login = Login(user_name=user_name, password=password, driver_manager=manager, url=None)
+        
+        login._init_login()
 
-download.main(index=0, basin_code = basin_code)
+    time.sleep(5)
+    nlc = NoLinkClass(driver, basin_code, download_type, currentUser)
+    nlc._search_process()
+    time.sleep(10)
 
+    download = Download(
+        driver=driver,
+        basin_code=basin_code,
+        user_name=user_name,
+        index=0,  
+        login = login,
+        nlc = nlc,
+        download_folder = download_folder,
+        download_folder_temp = download_folder_temp,
+        status_file=status_file,
+        finished=False,  
+        url=None,  
+        timeout=20  
+    )
+
+    #status_data = download.status_data
+    #finished = download.finished
+
+    # maybe check if all results downloaded here before proceeding to main download loop
+    download.main(index=0, basin_code = basin_code)
+
+status_data = pd.read_csv(status_file, index_col=0)
+row_index = 0
+while row_index < len(status_data):
+    # Check if all rows are finished
+    if (status_data['finished'] == 1).all():
+        print(f"All rows for {basin_code} are downloaded!")
+        break
+    else:
+        FullProcess()
