@@ -21,8 +21,21 @@ import pandas as pd
 import time
 import getpass
 
+# I don't know if I need this????
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), '..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+# and should it be in like all the classes?
+
+from driverTest import SetupDriver
+setup = SetupDriver()
+setup.setup_webdriver()
+service = setup.service
+
 #service = Service(ChromeDriverManager().install())
-#driver = webdriver.Chrome(service=service)
+driver = webdriver.Chrome(service=service)
+
 
 class PasswordManager:
     def __init__(self):
@@ -67,6 +80,7 @@ class WebDriverManager:
         self.driver = None
         self.setup_options()
         self.setup_service()
+        
 
     def setup_options(self):
         self.options = ChromeOptions()
@@ -77,8 +91,24 @@ class WebDriverManager:
         self.options.add_experimental_option('prefs', prefs)
 
     def setup_service(self):
+        os_type = setup.get_operating_system()
+        print(f"Detected operating system: {os_type}")
+
+        chrome_version = setup.get_chrome_version()
+        if chrome_version:
+            print(f"Detected Chrome version: {chrome_version}")
+            chromedriver_version = setup.get_matching_chromedriver_version(chrome_version)
+            if chromedriver_version:
+                print(f"Matching ChromeDriver version: {chromedriver_version}")
+                if setup.download_chromedriver(chromedriver_version, os_type):
+                    #move_chromedriver(os_type)
+                    print("downloaded")
+            else:
+                print("Failed to find a matching ChromeDriver version. Please ensure you have the latest version of Chrome installed.")
+        else:
+            print("Could not detect Chrome version. Please ensure Chrome is installed and you have the latest version.")
         #self.service = Service(ChromeDriverManager().install())
-        self.service = Service('/usr/local/bin/chromedriver')
+        #self.service = Service('/usr/local/bin/chromedriver')
      
         # should these two replace line 61?
         #self.temp_foldername = "storedLoginInformation" + str(self.number)

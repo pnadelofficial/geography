@@ -169,3 +169,10 @@ fromBox
 
 #notes
 notes
+
+chromedriver
+chrome-mac-x64
+chromedriver_temp_chrome-mac-x64.zip
+geo_env
+
+.DS_Store
