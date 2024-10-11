@@ -21,20 +21,16 @@ from selenium.webdriver.support.ui import Select
 import pandas as pd
 import time
 import getpass
-import sys
-
-#sys.path.append("..")
 
 from classes.UserClass import UserClass
 from classes.LoginClass import PasswordManager, WebDriverManager, Login
 from classes.NoLinkClass import NoLinkClass
 from classes.DownloadClass import Download
-#from setup.driverTest import SetupDriver
 
 #USER INFORMATION: User and Basin Information Setup (Set this for yourself and the current basin)
 #external_user = False
 basin_code = "gron"
-master_user = "selena2"
+master_user = "selena"
 download_type = "excel"
 
 currentUser = UserClass(basin_code, master_user, download_type)
