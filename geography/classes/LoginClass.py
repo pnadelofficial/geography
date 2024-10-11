@@ -83,7 +83,7 @@ class WebDriverManager:
         
 
     def setup_options(self):
-        self.options = ChromeOptions()
+        self.options = webdriver.ChromeOptions()
         self.options.page_load_strategy = 'normal'
         self.options.add_argument("--start-maximized")
         self.options.add_argument("user-data-dir=/tmp/storedLoginInformation1") # will this refer to reset method?       
@@ -121,7 +121,7 @@ class WebDriverManager:
     
     def start_driver(self):
         if not self.driver:
-            self.driver = webdriver.Chrome(service=self.service, options=self.options)
+            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=self.options)
         return self.driver
 
     def stop_driver(self):

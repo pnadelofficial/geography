@@ -69,7 +69,7 @@ class UserClass:
             return paths
 
         elif self.currentUser.lower() == "selena":
-            base_path_prefix = "/Users/selenawallace/"
+            base_path_prefix = "/Users/selenawallace/" #and then we need everyone to just have a base path
             geography_folder = base_path_prefix + "Documents/geography/"
             download_folder_temp = base_path_prefix + "Downloads/"
             download_folder = geography_folder + "data/downloads/" + self.basin + download_type_path
@@ -77,6 +77,7 @@ class UserClass:
 
             paths = {
                 "user_name": "swalla05",
+                "base_path": base_path_prefix,
                 "geography_folder": geography_folder,
                 "download_folder_temp": download_folder_temp,
                 "download_folder": download_folder,
@@ -94,6 +95,7 @@ class UserClass:
 
             paths = {
                 "user_name": "swalla05",
+                "base_path": base_path_prefix,
                 "geography_folder": geography_folder,
                 "download_folder_temp": download_folder_temp,
                 "download_folder": download_folder,

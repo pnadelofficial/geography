@@ -6,21 +6,19 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 import time
 import pandas as pd
 
-from classes.UserClass import UserClass
+#from classes.UserClass import UserClass
 
 class NoLinkClass:
-    def __init__(self, driver: webdriver, basin_code, download_type, currentUser, timeout=20, url=None):
+    def __init__(self, driver: webdriver, basin_code, download_type, base_path, timeout=20, url=None):
         self.driver = driver
         self.url = url
         self.timeout = timeout
         self.basin_code = basin_code
         self.download_type = download_type
-        self.currentUser = currentUser
+        self.base_path = base_path
+        self.geography_folder = f'{base_path}Documents/geography/geography/search_terms.xlsx'
 
-        paths = currentUser.getPath(download_type)
-        geography_folder = paths["geography_folder"]
-
-        tracking_sheet = pd.read_excel(f'{geography_folder}/geography/search_terms.xlsx') 
+        tracking_sheet = pd.read_excel(f'{base_path}Documents/geography/geography/search_terms.xlsx') 
         
         row = tracking_sheet[tracking_sheet['BCODE'] == basin_code.upper()]
         self.search_term = row['Basin_Specific_Terms'].values[0]
