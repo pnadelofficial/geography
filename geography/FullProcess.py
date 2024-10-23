@@ -64,7 +64,7 @@ def FullProcess():
         else: pass
         
         manager = WebDriverManager()
-        options = manager.setup_options()
+        #options = manager.setup_options()
         driver = manager.start_driver()
 
         time.sleep(5)

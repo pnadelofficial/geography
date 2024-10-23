@@ -28,13 +28,13 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 # and should it be in like all the classes?
 
-from driverTest import SetupDriver
-setup = SetupDriver()
-setup.setup_webdriver()
-service = setup.service
+#from driverTest import SetupDriver
+#setup = SetupDriver()
+#setup.setup_webdriver()
+#service = setup.service
 
-#service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service)
+# service = Service(ChromeDriverManager().install())
+#driver = webdriver.Chrome() # (service=service)
 
 
 class PasswordManager:
@@ -78,18 +78,20 @@ options.add_experimental_option('prefs', prefs)
 class WebDriverManager:
     def __init__(self):
         self.driver = None
+        self.options = ChromeOptions()
         self.setup_options()
-        self.setup_service()
+        #self.setup_service()
+        self.service = Service('/usr/local/bin/chromedriver')
+        self.driver = webdriver.Chrome(service=self.service)
         
-
     def setup_options(self):
         self.options = webdriver.ChromeOptions()
         self.options.page_load_strategy = 'normal'
         self.options.add_argument("--start-maximized")
-        self.options.add_argument("user-data-dir=/tmp/storedLoginInformation1") # will this refer to reset method?       
+        self.options.add_argument("user-data-dir=/tmp/storedLoginInformation")       
         prefs = {'download.prompt_for_download': False}
         self.options.add_experimental_option('prefs', prefs)
-
+    '''
     def setup_service(self):
         os_type = setup.get_operating_system()
         print(f"Detected operating system: {os_type}")
@@ -109,6 +111,7 @@ class WebDriverManager:
             print("Could not detect Chrome version. Please ensure Chrome is installed and you have the latest version.")
         #self.service = Service(ChromeDriverManager().install())
         #self.service = Service('/usr/local/bin/chromedriver')
+        '''
      
         # should these two replace line 61?
         #self.temp_foldername = "storedLoginInformation" + str(self.number)
@@ -132,7 +135,7 @@ class WebDriverManager:
 class Login:
     def __init__(self, user_name, password, driver_manager= WebDriverManager, timeout=20, url=None):
         self.driver_manager = driver_manager
-        self.driver = driver_manager.start_driver()
+        self.driver = driver_manager.start_driver() 
         self.user_name = user_name
         self.password = password
         self.url = url

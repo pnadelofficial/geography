@@ -373,7 +373,7 @@ class Download:
             '''
 
     def DateFilter(self, index):
-        self.set_date_range(index)
+        self.set_date_range(index) # change this to self.timeline_reset()
         try:
             self.get_result_count(index)
         except SkipRowException:
@@ -402,7 +402,7 @@ class Download:
         self.filename = f'ResultsList_{self.basin_code}_index{index}'
         return self.filename
 
-    def DownloadOptions(self, index):
+    def ExcelDownloadOptions(self, index):
         self.open_download_options = "//button[@class='has_tooltip' and @data-action='downloadopt']"
         self._click_from_xpath(self.open_download_options)
         time.sleep(5)
@@ -500,8 +500,6 @@ class Download:
         except FileNotFoundError:
             print(f"file {self.filename} stuck in default download folder")
             time.sleep(2)
-
-        #would love to be able to create the folders... https://stackoverflow.com/questions/70235696/checking-folder-and-if-it-doesnt-exist-create-it
 
     def update_status(self, index):
         self.filename = self.get_filename(index)

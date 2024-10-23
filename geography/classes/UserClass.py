@@ -205,6 +205,31 @@ class UserClass:
 
         else: 
             print("user not found")
+            '''
+            #import os
 
+            if os = mac ... 
 
+                computer_name = pwd.getpwuid(os.getuid()).pw_name
 
+                base_path_prefix = f'/Users/{computer_name}/'
+                download_folder_temp = f'{computer_base_path}/Downloads'
+
+                geography_folder = f'{computer_base_path}/geography/'
+
+            else:
+
+                username = os.environ.get('USERNAME')
+
+                base_path_prefix = f"C://Users/{username}/"
+                geography_folder = base_path_prefix + "Documents/geography/"
+                download_folder_temp = base_path_prefix + "/Downloads/"
+                download_folder = geography_folder + "data/downloads/" + self.basin + download_type_path
+                status_file = geography_folder + "data/status" + download_type_path + self.basin + ".csv"
+            
+            print(f"The current computer's name is: {username}")
+
+            # get user - prompt user to enter tufts username for login
+            # or maybe have them put in tufts login as master_user?
+
+            '''
