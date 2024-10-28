@@ -67,8 +67,11 @@ class NoLinkClass:
             self.driver.get(self.url)
         news_button = 'body > main > div > ln-navigation > navigation > div.global-nav.light.margin-bottom-30 > div.zones.pagewrapper.product-switcher-navigation.pagewrapper-nexis > nexissearchtabmenu > div > tabmenucomponent > div > div > ul > li:nth-child(3) > button'
         self._click_from_css(news_button) # click to search in News
-        news_advancedsearch_button = '#wbbhkkk > ul > li:nth-child(1) > button'
-        self._click_from_css(news_advancedsearch_button) # click advanced search
+        time.sleep(2)
+        #news_advancedsearch_button = '#wbbhkkk > ul > li:nth-child(1) > button'
+        #self._click_from_css(news_advancedsearch_button) # click advanced search
+        news_advancedsearch_button = "//button[@type='button' and @data-action='guidedsearch']"
+        self._click_from_xpath(news_advancedsearch_button) # click advanced search (switched to xpath)
         self.driver.execute_script("window.scrollTo(0,102)")
         print("Initializing search for " + self.basin_code)
         #print(f"Initializing search for {row['Basin_Name']})

@@ -164,6 +164,26 @@ class Login:
         self.number += 1 # self.number = self.number + 1
         self.temp_foldername = "storedLoginInformation" + str(self.number)
         # and then somewhere else the following ???
+
+    def login_page(self):
+        try: 
+            self._click_from_css(".btn-shib > .login")
+            print("Logging in user with userName " + self.user_name)
+
+        except NoSuchElementException:
+            print("need to go back through library login")
+            library_link = "https://tufts.primo.exlibrisgroup.com/discovery/search?query=any,contains,nexis%20uni&tab=Everything&search_scope=MyInst_and_CI&vid=01TUN_INST:01TUN&lang=en&offset=0"
+            self.driver.get(library_link)
+            available_online_css = "#alma991017244849703851availabilityLine0 > span"
+            self._click_from_css(available_online_css)
+            #   click "Available Online"
+            #   then try login process again (btn-shib login, user, pass...)
+        
+        self._send_keys_from_css("#username", self.user_name)
+        self._send_keys_from_css("#password", self.password)
+        self._click_from_css("#login > button")
+        print("Entered Tufts username and password")
+        time.sleep(3)
     
     def _init_login(self):
         
@@ -177,17 +197,10 @@ class Login:
             print("User is already logged in.")
         except TimeoutException:
             print("User is not logged in. Proceeding with login...")
-            self._click_from_css(".btn-shib > .login")
-            print("Logging in user with userName " + self.user_name)
             try:
-                self._send_keys_from_css("#username", self.user_name)
-                self._send_keys_from_css("#password", self.password)
-                self._click_from_css("#login > button")
-                print("Entered Tufts username and password")
-                time.sleep(3)
-
-            #in case update chrome page comes up
+                self.login_page()
             
+            #in case update chrome page comes up
                 try:
                     update_chrome_substring = "https://api-58712eef.duosecurity.com/frame/frameless/v4/auth?sid=frameless-"
                     if update_chrome_substring in self.driver.current_url:
