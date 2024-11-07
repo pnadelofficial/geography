@@ -1,5 +1,6 @@
 #Example Mac Path: "/Users/dvas22/Desktop/David/www/geography/"
 #Example PC Path: "C:/Users/Melissa/Documents/EventsAutomation/geography/examples/excelHandling/excel/basinData.csv"
+import os 
 
 class UserClass:
     def __init__(self, basin_code, currentUser, download_type):
@@ -204,7 +205,27 @@ class UserClass:
             return paths
 
         else: 
-            print("user not found")
+            base_path_prefix = os.path.expanduser("~")
+            geography_folder = "./"
+            download_folder_temp = base_path_prefix + "/Downloads/" # do we need this?
+            
+            download_folder = geography_folder + "data/status" + self.basin + download_type_path
+            status_file = geography_folder + "data/status" + download_type_path + self.basin + ".csv"
 
+            self.base_path = base_path_prefix
+            self.user_name = self.currentUser
+            self.geography_folder = geography_folder
+            self.download_folder_temp = download_folder_temp
+            self.download_folder = download_folder
+            self.status_file = status_file
 
+            paths = {
+                "base_path": base_path_prefix,
+                "user_name": "pnadel01",
+                "geography_folder": geography_folder,
+                "download_folder_temp": download_folder_temp,
+                "download_folder": download_folder,
+                "status_file": status_file,
+            }
 
+            return paths
