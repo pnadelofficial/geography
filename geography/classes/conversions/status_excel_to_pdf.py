@@ -21,7 +21,7 @@ class convert_pdf:
         df_excel = df_excel.loc[:, ["BCODE", "Basin_Name", "start_date", "end_date"]]
 
         # Initialize an empty DataFrame for the result
-        df_result = pd.DataFrame(columns=["BCODE", "basin", "key", "set_date", "over_thousand", "start_date", "end_date", "start_count", "stop_count", "total_count", "file_name", "finished"])
+        df_result = pd.DataFrame(columns=["BCODE", "basin", "key", "set_date", "over_one_thousand", "start_date", "end_date", "start_count", "stop_count", "total_count", "file_name", "finished"])
 
         # Populate the "key" column with values starting from 1
         df_result["key"] = range(1, len(df_excel) + 1)
@@ -37,19 +37,19 @@ class convert_pdf:
 
         # Repeat each row 10 times and append to the result DataFrame
         for _, row in df_result.iterrows():
-            repeated_rows = pd.concat([pd.DataFrame(row).transpose()] * 10, ignore_index=True)
+            repeated_rows = pd.concat([pd.DataFrame(row).transpose()] * 2, ignore_index=True)
             repeated_df = pd.concat([repeated_df, repeated_rows], ignore_index=True)
 
         # Add "set_date" column with desired values
-        set_date_values = np.concatenate(([1], np.zeros(9)))  # Generates [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        set_date_values = np.concatenate(([1], np.zeros(1)))  # Generates [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         repeated_df["set_date"] = np.tile(set_date_values, len(df_result))
             
         # Add "start_count" column with desired values
-        start_count_values = np.arange(1, 902, 100)  # Generates [1, 101, 201, ..., 901]
+        start_count_values = np.arange(1, 1001, 500)  # Generates [1, 501]
         repeated_df["start_count"] = np.tile(start_count_values, len(df_result))
 
         # Add "stop_count" column with desired values
-        stop_count_values = np.arange(100, 1001, 100)  # Generates [100, 200, 300, ..., 1000]
+        stop_count_values = np.arange(500, 1001, 500)  # Generates [500, 1000]
         repeated_df["stop_count"] = np.tile(stop_count_values, len(df_result))
 
 
@@ -87,6 +87,7 @@ class convert_pdf:
 
 #to call this, paste
 '''
+basin_code = 'tigr'
 pdf_conversion = convert_pdf(basin_code)
 pdf_conversion.convert(basin_code)
 '''

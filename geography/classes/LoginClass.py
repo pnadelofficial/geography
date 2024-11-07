@@ -78,6 +78,7 @@ options.add_experimental_option('prefs', prefs)
 class WebDriverManager:
     def __init__(self):
         self.driver = None
+        self.options = ChromeOptions()
         self.setup_options()
         # self.setup_service()
         
@@ -86,7 +87,7 @@ class WebDriverManager:
         self.options = webdriver.ChromeOptions()
         self.options.page_load_strategy = 'normal'
         self.options.add_argument("--start-maximized")
-        self.options.add_argument("user-data-dir=/tmp/storedLoginInformation1") # will this refer to reset method?       
+        self.options.add_argument("user-data-dir=/tmp/storedLoginInformation")       
         prefs = {'download.prompt_for_download': False}
         self.options.add_experimental_option('prefs', prefs)
 
@@ -109,6 +110,7 @@ class WebDriverManager:
     #         print("Could not detect Chrome version. Please ensure Chrome is installed and you have the latest version.")
         #self.service = Service(ChromeDriverManager().install())
         #self.service = Service('/usr/local/bin/chromedriver')
+        '''
      
         # should these two replace line 61?
         #self.temp_foldername = "storedLoginInformation" + str(self.number)
@@ -133,7 +135,7 @@ class WebDriverManager:
 class Login:
     def __init__(self, user_name, password, driver_manager= WebDriverManager, timeout=20, url=None):
         self.driver_manager = driver_manager
-        self.driver = driver_manager.start_driver()
+        self.driver = driver_manager.start_driver() 
         self.user_name = user_name
         self.password = password
         self.url = url
@@ -162,12 +164,38 @@ class Login:
         self.number += 1 # self.number = self.number + 1
         self.temp_foldername = "storedLoginInformation" + str(self.number)
         # and then somewhere else the following ???
+
+    def login_page(self):
+        try: 
+            self._click_from_css(".btn-shib > .login")
+            print("Logging in user with userName " + self.user_name)
+
+        except TimeoutException:
+            print("need to go back through library login")
+            library_link = "https://tufts.primo.exlibrisgroup.com/discovery/search?query=any,contains,nexis%20uni&tab=Everything&search_scope=MyInst_and_CI&vid=01TUN_INST:01TUN&lang=en&offset=0"
+            self.driver.get(library_link)
+
+            # these next two lines get to nexis uni from Tufts library
+            available_online_css = "#alma991017244849703851availabilityLine0 > span"
+            self._click_from_css(available_online_css) #click "Available Online"
+            # then retry login process again (btn-shib login, user, pass...)
+            # but in testing, it opened in a new tab (which, yeah, it was gonna do)
+            # but the original tab continued the process just fine... 
+            # so maybe it just needs to navigate away from nexis uni?
+            self._click_from_css(".btn-shib > .login")
+        
+        self._send_keys_from_css("#username", self.user_name)
+        self._send_keys_from_css("#password", self.password)
+        self._click_from_css("#login > button")
+        print("Entered Tufts username and password")
+        time.sleep(3)
     
     def _init_login(self):
         
         loggedin_home = "https://login.ezproxy.library.tufts.edu/login?auth=tufts&url=http://www.nexisuni.com"
         self.driver.get(self.url or loggedin_home)
-
+        time.sleep(5)
+        
         try:
             tuftsloggedin_element = "co-branding-display-name" # class name
             WebDriverWait(self.driver, self.timeout).until(
@@ -175,17 +203,10 @@ class Login:
             print("User is already logged in.")
         except TimeoutException:
             print("User is not logged in. Proceeding with login...")
-            self._click_from_css(".btn-shib > .login")
-            print("Logging in user with userName " + self.user_name)
             try:
-                self._send_keys_from_css("#username", self.user_name)
-                self._send_keys_from_css("#password", self.password)
-                self._click_from_css("#login > button")
-                print("Entered Tufts username and password")
-                time.sleep(3)
-
-            #in case update chrome page comes up
+                self.login_page()
             
+            #in case update chrome page comes up
                 try:
                     update_chrome_substring = "https://api-58712eef.duosecurity.com/frame/frameless/v4/auth?sid=frameless-"
                     if update_chrome_substring in self.driver.current_url:
@@ -219,7 +240,7 @@ class Login:
                 time.sleep(5)
 
             except TimeoutException:
-                print("logged in automatically for some reason")
+                #print("logged in automatically for some reason")
                 pass
 
     def handle_duo_2fa(self):

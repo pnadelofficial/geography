@@ -164,6 +164,9 @@ cython_debug/
 # contents of downloads folder
 downloads
 
+
+data
+
 # converted status sheets
 fromBox
 
