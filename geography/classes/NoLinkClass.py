@@ -5,6 +5,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 import time
 import pandas as pd
+import pwd
+import os
 
 #from classes.UserClass import UserClass
 
@@ -18,6 +20,8 @@ class NoLinkClass:
         self.base_path = base_path
         #self.geography_folder = f'{base_path}Documents/geography/'
 
+        computer_name = pwd.getpwuid(os.getuid()).pw_name # this is just for mac though...
+        base_path = f'/Users/{computer_name}'
         tracking_sheet = pd.read_excel(f'{base_path}/Documents/geography/geography/search_terms.xlsx') 
         
         row = tracking_sheet[tracking_sheet['BCODE'] == basin_code.upper()]

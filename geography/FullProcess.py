@@ -21,17 +21,21 @@ from selenium.webdriver.support.ui import Select
 import pandas as pd
 import time
 import getpass
+import sys
 
 from classes.UserClass import UserClass
 from classes.LoginClass import PasswordManager, WebDriverManager, Login
 from classes.NoLinkClass import NoLinkClass
 from classes.DownloadClass import Download
+from geography.classes.conversions.status_excel_to_pdf import convert_pdf
+
+sys.path.append("..")
 
 #USER INFORMATION: User and Basin Information Setup (Set this for yourself and the current basin)
 #external_user = False
-basin_code = "gron"
+basin_code = "tigr"
 master_user = "selena"
-download_type = "excel"
+download_type = "pdf"
 
 currentUser = UserClass(basin_code, master_user, download_type)
 currentUser.getName()
@@ -52,6 +56,14 @@ def FullProcess():
     else:
         os.makedirs(download_folder) # this isn't exactly right is it?
         print(f"created folder {basin_code}/{download_type}")
+
+    if os.path.exists(status_file): # haven't tested if this works yet, try on a new basin
+        pass
+    else:
+        pdf_conversion = convert_pdf(basin_code)
+        pdf_conversion.convert(basin_code)
+
+    status_data = pd.read_csv(status_file)
 
     time.sleep(5)
 
@@ -78,19 +90,19 @@ def FullProcess():
     time.sleep(10)
 
     download = Download(
-        driver=driver,
-        basin_code=basin_code,
-        user_name=user_name,
-        index=0,  
-        login = login,
-        nlc = nlc,
-        download_folder = download_folder,
-        download_folder_temp = download_folder_temp,
-        status_file=status_file,
-        finished=False,  
-        url=None,  
-        timeout=20  
-    )
+            driver=driver,
+            basin_code=basin_code,
+            user_name=user_name,
+            index=0,  
+            login = login,
+            nlc = nlc,
+            download_type = download_type,
+            download_folder = download_folder,
+            download_folder_temp = download_folder_temp,
+            status_file=status_file,
+            finished=False,  
+            url=None,  
+            timeout=20 )   
 
     #status_data = download.status_data
     #finished = download.finished
