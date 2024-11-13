@@ -84,7 +84,7 @@ class WebDriverManager:
         self.driver_path = Path("./chromedriver") / ("chromedriver.exe" if sys.platform == "win32" else "chromedriver")
         
         service_path = ".\chromedriver\chromedriver" if sys.platform.startswith("win") else "./chromedriver/chromedriver"
-        self.service = Service()
+        self.service = Service(service_path)
     
     def setup_options(self):
         self.options = webdriver.ChromeOptions()
