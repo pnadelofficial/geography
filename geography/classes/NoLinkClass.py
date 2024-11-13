@@ -5,8 +5,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, TimeoutException
 import time
 import pandas as pd
-import pwd
-import os
 
 #from classes.UserClass import UserClass
 
